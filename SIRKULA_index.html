@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<base target="_top">
+<title>SIRKULA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dark:#0B4A46; --dark2:#093B37; --green:#1F9D55; --green-light:#E6F7EE;
+    --yellow:#F5B700; --white:#FFFFFF; --ink:#16302B; --muted:#5B7B73;
+    --card-bg:#F5FAF8; --border:#D8EBE4;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',sans-serif;color:var(--ink);background:var(--white);}
+  h1,h2,h3,.brand{font-family:'Poppins',sans-serif;}
+  button{font-family:'Inter',sans-serif;cursor:pointer;}
+  a{color:inherit;}
+
+  /* ---------- header / nav ---------- */
+  header{position:sticky;top:0;z-index:50;background:var(--dark);color:var(--white);}
+  .topbar{display:flex;align-items:center;gap:.6rem;padding:.75rem 1rem;}
+  .topbar .brand{font-weight:800;font-size:1.15rem;letter-spacing:.5px;}
+  .topbar .tagline{font-size:.68rem;color:#BFE3DB;margin-top:-2px;}
+  nav.tabs{display:flex;gap:.3rem;overflow-x:auto;padding:0 .6rem .6rem;scrollbar-width:none;}
+  nav.tabs::-webkit-scrollbar{display:none;}
+  nav.tabs button{
+    flex:0 0 auto;background:transparent;border:none;color:#BFE3DB;
+    padding:.45rem .8rem;border-radius:999px;font-size:.82rem;font-weight:600;white-space:nowrap;
+  }
+  nav.tabs button.active{background:var(--green);color:var(--white);}
+
+  main{max-width:920px;margin:0 auto;padding:1.1rem 1rem 3rem;}
+  .page{display:none;}
+  .page.active{display:block;animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+  .eyebrow{font-size:.72rem;font-weight:700;color:var(--green);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.3rem;}
+  h2.page-title{font-size:1.5rem;margin:.1rem 0 1rem;}
+
+  /* ---------- shared card ---------- */
+  .card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:1rem;}
+  .card + .card{margin-top:.8rem;}
+  .grid{display:grid;gap:.8rem;}
+  @media(min-width:640px){.grid-2{grid-template-columns:1fr 1fr;} .grid-3{grid-template-columns:1fr 1fr 1fr;}}
+
+  label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:.6rem 0 .25rem;}
+  select,input{
+    width:100%;padding:.6rem .7rem;border-radius:9px;border:1px solid var(--border);
+    font-size:.92rem;font-family:'Inter',sans-serif;background:var(--white);color:var(--ink);
+  }
+  .btn{
+    display:inline-block;background:var(--green);color:var(--white);border:none;
+    padding:.7rem 1.3rem;border-radius:999px;font-weight:700;font-size:.9rem;margin-top:.9rem;
+  }
+  .btn.secondary{background:var(--dark);}
+  .btn.block{width:100%;text-align:center;}
+  .muted{color:var(--muted);font-size:.83rem;}
+  .badge{display:inline-block;background:var(--green-light);color:var(--green);font-weight:700;font-size:.72rem;padding:.2rem .6rem;border-radius:999px;}
+
+  table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  th,td{text-align:left;padding:.5rem .4rem;border-bottom:1px solid var(--border);}
+  th{color:var(--muted);font-weight:600;font-size:.72rem;text-transform:uppercase;}
+
+  .stat{background:var(--dark);color:var(--white);border-radius:14px;padding:1rem;}
+  .stat .num{font-family:'Poppins',sans-serif;font-weight:800;font-size:1.6rem;color:var(--yellow);}
+  .stat .lbl{font-size:.78rem;color:#D9F0E9;margin-top:.2rem;}
+
+  .flow{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;justify-content:center;margin:1rem 0;}
+  .flow .node{background:var(--green-light);color:var(--dark);font-weight:700;font-size:.78rem;padding:.5rem .8rem;border-radius:10px;}
+  .flow .arrow{color:var(--green);font-weight:700;}
+
+  .hero{background:var(--dark);color:var(--white);border-radius:18px;padding:1.6rem 1.3rem;margin-bottom:1rem;}
+  .hero h1{font-size:1.7rem;line-height:1.15;margin:0 0 .5rem;}
+  .hero p{color:#D9F0E9;font-size:.92rem;margin:0 0 1rem;}
+
+  .partner-card{border:1px solid var(--border);border-radius:12px;padding:.8rem;background:var(--white);}
+  .partner-card + .partner-card{margin-top:.6rem;}
+  .partner-card .row{display:flex;justify-content:space-between;align-items:baseline;}
+  .pill{font-size:.68rem;font-weight:700;color:var(--green);background:var(--green-light);padding:.15rem .5rem;border-radius:999px;}
+
+  .empty{color:var(--muted);font-size:.85rem;font-style:italic;padding:1rem 0;}
+  .warn{background:#FFF7E0;border:1px solid var(--yellow);color:#6B5200;border-radius:10px;padding:.7rem .9rem;font-size:.8rem;font-style:italic;}
+
+  .roles-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+  @media(min-width:640px){.roles-grid{grid-template-columns:1fr 1fr 1fr;}}
+  .role-card{border:1px solid var(--green);border-radius:12px;padding:.7rem;background:var(--white);}
+  .role-card b{display:block;font-size:.88rem;margin-bottom:.15rem;}
+  .role-card span{font-size:.76rem;color:var(--muted);}
+
+  footer{text-align:center;color:var(--muted);font-size:.75rem;padding:1.5rem 1rem 2rem;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <span class="brand">♻ SIRKULA</span>
+  </div>
+  <div class="topbar" style="padding-top:0;margin-top:-10px;">
+    <span class="tagline">Sampahmu punya nilai. Temukan pasarnya, dapatkan rupiahnya.</span>
+  </div>
+  <nav class="tabs" id="tabNav">
+    <button data-page="beranda" class="active">Beranda</button>
+    <button data-page="cek-nilai">Cek Nilai</button>
+    <button data-page="marketplace">Pasar Material</button>
+    <button data-page="cari-mitra">Cari Mitra</button>
+    <button data-page="transaksi">Transaksi</button>
+    <button data-page="wallet">Wallet</button>
+    <button data-page="dampak">Dampak</button>
+    <button data-page="green-jobs">Green Jobs</button>
+    <button data-page="tentang">Tentang</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ================= BERANDA ================= -->
+  <section class="page active" id="page-beranda">
+    <div class="hero">
+      <h1>SAMPAHMU PUNYA NILAI.</h1>
+      <p>Pilah material. Temukan pasarnya. Dapatkan nilai ekonominya.</p>
+      <button class="btn" style="background:var(--yellow);color:var(--dark);" onclick="goTo('cek-nilai')">Cek Nilai Sampah</button>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Alur Sirkular</div>
+      <div class="flow">
+        <span class="node">Rumah Tangga</span><span class="arrow">→</span>
+        <span class="node">Pemilahan</span><span class="arrow">→</span>
+        <span class="node">SIRKULA</span><span class="arrow">→</span>
+        <span class="node">Pengepul / Recycler</span><span class="arrow">→</span>
+        <span class="node">Industri</span><span class="arrow">→</span>
+        <span class="node">Produk Baru</span>
+      </div>
+      <p class="muted">SIRKULA mempertemukan pemilik material bernilai dengan bank sampah, pengepul, pengumpul, recycler, dan pembeli material daur ulang — dalam satu alur digital yang transparan.</p>
+    </div>
+  </section>
+
+  <!-- ================= CEK NILAI ================= -->
+  <section class="page" id="page-cek-nilai">
+    <div class="eyebrow">Cek Nilai Material</div>
+    <h2 class="page-title">Berapa nilai sampahmu?</h2>
+
+    <div class="card">
+      <label for="cn-material">Jenis Material</label>
+      <select id="cn-material"><option>Memuat...</option></select>
+
+      <label for="cn-berat">Berat (kg)</label>
+      <input type="number" id="cn-berat" min="0" step="0.1" value="1">
+
+      <label for="cn-kualitas">Kualitas</label>
+      <select id="cn-kualitas">
+        <option>Bagus</option>
+        <option selected>Sedang</option>
+        <option>Kurang</option>
+      </select>
+
+      <button class="btn block" onclick="hitungEstimasi()">Hitung Estimasi Nilai</button>
+    </div>
+
+    <div id="cn-result"></div>
+    <p class="muted" style="margin-top:.8rem;">Harga merupakan estimasi/indikatif dan dapat berbeda berdasarkan kualitas, volume, lokasi dan pembeli.</p>
+  </section>
+
+  <!-- ================= MARKETPLACE / SMART MATCHING ================= -->
+  <section class="page" id="page-marketplace">
+    <div class="eyebrow">Pasar Material</div>
+    <h2 class="page-title">Smart Matching — temukan pembeli yang cocok</h2>
+
+    <div class="card">
+      <label for="mp-material">Jenis Material</label>
+      <select id="mp-material"><option>Memuat...</option></select>
+
+      <label for="mp-berat">Perkiraan Berat (kg)</label>
+      <input type="number" id="mp-berat" min="0" step="0.1" value="5">
+
+      <label for="mp-lokasi">Lokasi (opsional)</label>
+      <input type="text" id="mp-lokasi" placeholder="mis. Sukamaju">
+
+      <button class="btn block" onclick="cariMatching()">Cari Pembeli</button>
+    </div>
+
+    <div id="mp-result" style="margin-top:.9rem;"></div>
+  </section>
+
+  <!-- ================= CARI MITRA ================= -->
+  <section class="page" id="page-cari-mitra">
+    <div class="eyebrow">Cari Mitra Terdekat</div>
+    <h2 class="page-title">Bank sampah, pengepul & recycler aktif</h2>
+
+    <div class="card">
+      <div class="grid grid-2">
+        <div>
+          <label for="cm-tipe">Tipe Mitra</label>
+          <select id="cm-tipe" onchange="cariMitra()">
+            <option>Semua</option>
+            <option>Bank Sampah</option>
+            <option>Pengepul</option>
+            <option>Recycler</option>
+          </select>
+        </div>
+        <div>
+          <label for="cm-lokasi">Lokasi</label>
+          <input type="text" id="cm-lokasi" placeholder="mis. Sukamaju" oninput="cariMitra()">
+        </div>
+      </div>
+    </div>
+
+    <div id="cm-result" style="margin-top:.9rem;"></div>
+  </section>
+
+  <!-- ================= TRANSAKSI ================= -->
+  <section class="page" id="page-transaksi">
+    <div class="eyebrow">Transaksi</div>
+    <h2 class="page-title">Catat penjualan materialmu</h2>
+
+    <div class="card">
+      <label for="tx-material">Jenis Material</label>
+      <select id="tx-material" onchange="isiSaranHarga()"><option>Memuat...</option></select>
+
+      <label for="tx-berat">Berat (kg)</label>
+      <input type="number" id="tx-berat" min="0" step="0.1" value="1">
+
+      <label for="tx-harga">Harga per kg (Rp)</label>
+      <input type="number" id="tx-harga" min="0" step="100">
+
+      <label for="tx-pembeli">Pembeli / Mitra</label>
+      <select id="tx-pembeli"><option>Memuat...</option></select>
+
+      <button class="btn block" onclick="catatTransaksi()">Catat Transaksi</button>
+    </div>
+
+    <div id="tx-feedback"></div>
+
+    <h3 style="margin-top:1.3rem;">Riwayat Transaksi</h3>
+    <div id="tx-history"><p class="empty">Memuat riwayat...</p></div>
+  </section>
+
+  <!-- ================= WALLET ================= -->
+  <section class="page" id="page-wallet">
+    <div class="eyebrow">SIRKULA Wallet</div>
+    <h2 class="page-title">Saldo nilai ekonomi materialmu</h2>
+    <div id="wallet-summary" class="grid grid-3"></div>
+
+    <h3 style="margin-top:1.3rem;">Riwayat Transaksi</h3>
+    <div id="wallet-history"><p class="empty">Memuat riwayat...</p></div>
+    <p class="muted" style="margin-top:.6rem;">SIRKULA Wallet adalah pencatatan nilai ekonomi (ledger digital/saldo simulasi) untuk keperluan prototype — bukan sistem pembayaran bank sungguhan.</p>
+  </section>
+
+  <!-- ================= DAMPAK ================= -->
+  <section class="page" id="page-dampak">
+    <div class="eyebrow">Impact Dashboard</div>
+    <h2 class="page-title">Dampak dari transaksi sirkular</h2>
+    <div id="impact-stats" class="grid grid-2"></div>
+    <div class="warn" style="margin-top:1rem;">⚠ Angka pada dashboard ini adalah DATA SIMULASI PROTOTYPE, dihasilkan dari transaksi yang tercatat di prototype ini — bukan data operasional nyata.</div>
+  </section>
+
+  <!-- ================= GREEN JOBS ================= -->
+  <section class="page" id="page-green-jobs">
+    <div class="eyebrow">Green Jobs Dashboard</div>
+    <h2 class="page-title">Pekerjaan hijau yang terhubung lewat SIRKULA</h2>
+    <div id="green-jobs-roles" class="roles-grid"></div>
+    <div class="card" style="margin-top:1rem;border:1px solid var(--green);">
+      <p style="margin:0;font-weight:600;">SIRKULA tidak mengambil alih pekerjaan pemulung & pengepul — SIRKULA memberi mereka identitas digital, riwayat transaksi, dan reputasi, sehingga pekerjaan hijau yang selama ini informal menjadi lebih terlihat, adil, dan bernilai secara ekonomi.</p>
+    </div>
+  </section>
+
+  <!-- ================= TENTANG ================= -->
+  <section class="page" id="page-tentang">
+    <div class="eyebrow">Tentang SIRKULA</div>
+    <h2 class="page-title">Sistem Sirkular Material & Rupiah</h2>
+    <div class="card">
+      <p>SIRKULA adalah digital circular material marketplace yang mempertemukan masyarakat pemilik sampah/material bernilai dengan bank sampah, pengepul, pengumpul, recycler, dan calon pembeli material daur ulang.</p>
+      <p class="muted">Dibangun untuk Green Jobs Youth Innovation Showcase 2026, kategori Inovasi Digital.</p>
+      <p class="muted">Kontak: [isi email/kontak tim di sini]</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>SIRKULA — Prototype dibangun dengan HTML/CSS/JS, Google Apps Script &amp; Google Sheets.</footer>
+
+<script>
+  // ---------------- navigation ----------------
+  const pages = document.querySelectorAll('.page');
+  const tabBtns = document.querySelectorAll('#tabNav button');
+  function goTo(pageId){
+    pages.forEach(p => p.classList.toggle('active', p.id === 'page-' + pageId));
+    tabBtns.forEach(b => b.classList.toggle('active', b.dataset.page === pageId));
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(pageId === 'marketplace' || pageId === 'cari-mitra') {} // data already loaded on init
+    if(pageId === 'wallet') loadWallet();
+    if(pageId === 'dampak') loadImpact();
+    if(pageId === 'transaksi') loadTransactionHistory();
+  }
+  tabBtns.forEach(b => b.addEventListener('click', () => goTo(b.dataset.page)));
+
+  function formatRp(n){
+    return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+  }
+
+  // ---------------- materials (shared) ----------------
+  let MATERIALS = [];
+  function loadMaterials(){
+    google.script.run.withSuccessHandler(function(list){
+      MATERIALS = list;
+      fillSelect('cn-material', list.map(m => ({value:m.id, label:m.nama})));
+      fillSelect('mp-material', list.map(m => ({value:m.nama, label:m.nama})));
+      fillSelect('tx-material', list.map(m => ({value:m.nama, label:m.nama})));
+      isiSaranHarga();
+    }).getMaterials();
+  }
+  function fillSelect(id, options){
+    const el = document.getElementById(id);
+    el.innerHTML = '';
+    options.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.value; opt.textContent = o.label;
+      el.appendChild(opt);
+    });
+  }
+
+  // ---------------- CEK NILAI ----------------
+  function hitungEstimasi(){
+    const materialId = document.getElementById('cn-material').value;
+    const berat = document.getElementById('cn-berat').value;
+    const kualitas = document.getElementById('cn-kualitas').value;
+    document.getElementById('cn-result').innerHTML = '<p class="empty">Menghitung...</p>';
+    google.script.run.withSuccessHandler(function(res){
+      document.getElementById('cn-result').innerHTML =
+        '<div class="card"><div class="badge">Estimasi Nilai</div>'+
+        '<h3 style="margin:.5rem 0 0;">'+res.material+' · '+res.berat+' kg · '+res.kualitas+'</h3>'+
+        '<p style="font-size:1.4rem;font-weight:800;color:var(--green);margin:.4rem 0;">'+formatRp(res.nilaiMin)+' – '+formatRp(res.nilaiMax)+'</p>'+
+        '<p class="muted">≈ '+formatRp(res.hargaMinPerKg)+' – '+formatRp(res.hargaMaxPerKg)+' / kg</p></div>';
+    }).withFailureHandler(showError('cn-result')).estimateValue(materialId, berat, kualitas);
+  }
+
+  // ---------------- MARKETPLACE / SMART MATCHING ----------------
+  function cariMatching(){
+    const materialName = document.getElementById('mp-material').value;
+    const berat = document.getElementById('mp-berat').value;
+    const lokasi = document.getElementById('mp-lokasi').value;
+    document.getElementById('mp-result').innerHTML = '<p class="empty">Mencari pembeli...</p>';
+    google.script.run.withSuccessHandler(function(list){
+      if(list.length === 0){
+        document.getElementById('mp-result').innerHTML = '<p class="empty">Belum ada pembeli yang cocok untuk kriteria ini.</p>';
+        return;
+      }
+      let html = '<p class="badge">'+list.length+' pembeli yang sesuai ditemukan</p>';
+      list.forEach(p => { html += partnerCardHtml(p); });
+      document.getElementById('mp-result').innerHTML = html;
+    }).withFailureHandler(showError('mp-result')).smartMatch(materialName, berat, lokasi);
+  }
+
+  // ---------------- CARI MITRA ----------------
+  function cariMitra(){
+    const tipe = document.getElementById('cm-tipe').value;
+    const lokasi = document.getElementById('cm-lokasi').value;
+    document.getElementById('cm-result').innerHTML = '<p class="empty">Mencari mitra...</p>';
+    google.script.run.withSuccessHandler(function(list){
+      if(list.length === 0){
+        document.getElementById('cm-result').innerHTML = '<p class="empty">Tidak ada mitra ditemukan.</p>';
+        return;
+      }
+      let html = '';
+      list.forEach(p => { html += partnerCardHtml(p); });
+      document.getElementById('cm-result').innerHTML = html;
+    }).withFailureHandler(showError('cm-result')).searchPartners(tipe, lokasi);
+  }
+
+  function partnerCardHtml(p){
+    return '<div class="partner-card">'+
+      '<div class="row"><b>'+p.nama+'</b><span class="pill">'+p.tipe+'</span></div>'+
+      '<p class="muted" style="margin:.3rem 0;">📍 '+p.lokasi+' &nbsp;·&nbsp; Menerima: '+p.materials_diterima+'</p>'+
+      '<div class="row"><span style="font-weight:700;color:var(--green);">'+formatRp(p.harga_per_kg)+' / kg</span>'+
+      '<span class="muted">Min. '+p.min_pembelian_kg+' kg'+(p.bisa_pickup ? ' · Bisa pickup' : '')+'</span></div>'+
+      '</div>';
+  }
+
+  // ---------------- TRANSAKSI ----------------
+  function isiSaranHarga(){
+    const materialName = document.getElementById('tx-material') ? document.getElementById('tx-material').value : null;
+    const mat = MATERIALS.find(m => m.nama === materialName);
+    if(mat){
+      const mid = Math.round((mat.harga_min_per_kg + mat.harga_max_per_kg) / 2);
+      document.getElementById('tx-harga').value = mid;
+    }
+    // isi opsi pembeli dari partners
+    google.script.run.withSuccessHandler(function(list){
+      fillSelect('tx-pembeli', list.filter(p=>p.status_aktif).map(p => ({value:p.nama, label:p.nama})));
+    }).getPartners();
+  }
+
+  function catatTransaksi(){
+    const data = {
+      material: document.getElementById('tx-material').value,
+      berat: document.getElementById('tx-berat').value,
+      hargaPerKg: document.getElementById('tx-harga').value,
+      pembeli: document.getElementById('tx-pembeli').value,
+    };
+    document.getElementById('tx-feedback').innerHTML = '<p class="empty">Menyimpan transaksi...</p>';
+    google.script.run.withSuccessHandler(function(res){
+      document.getElementById('tx-feedback').innerHTML =
+        '<div class="card"><div class="badge">Tersimpan</div><p style="margin:.4rem 0 0;">Transaksi '+res.id+' senilai <b>'+formatRp(res.nilaiTotal)+'</b> berhasil dicatat.</p></div>';
+      loadTransactionHistory();
+    }).withFailureHandler(showError('tx-feedback')).addTransaction(data);
+  }
+
+  function loadTransactionHistory(){
+    google.script.run.withSuccessHandler(function(list){
+      renderHistoryTable('tx-history', list);
+    }).getTransactions();
+  }
+
+  function renderHistoryTable(elId, list){
+    if(list.length === 0){
+      document.getElementById(elId).innerHTML = '<p class="empty">Belum ada transaksi tercatat.</p>';
+      return;
+    }
+    let html = '<table><tr><th>Tanggal</th><th>Material</th><th>Berat</th><th>Nilai</th><th>Pembeli</th></tr>';
+    list.slice(0,15).forEach(t => {
+      html += '<tr><td>'+t.tanggal+'</td><td>'+t.material+'</td><td>'+t.berat_kg+' kg</td><td>'+formatRp(t.nilai_total)+'</td><td>'+t.pembeli+'</td></tr>';
+    });
+    html += '</table>';
+    document.getElementById(elId).innerHTML = html;
+  }
+
+  // ---------------- WALLET ----------------
+  function loadWallet(){
+    google.script.run.withSuccessHandler(function(sum){
+      document.getElementById('wallet-summary').innerHTML =
+        '<div class="stat"><div class="num">'+formatRp(sum.saldo)+'</div><div class="lbl">Saldo SIRKULA Wallet</div></div>'+
+        '<div class="stat"><div class="num">'+sum.jumlahTransaksi+'</div><div class="lbl">Jumlah Transaksi</div></div>'+
+        '<div class="stat"><div class="num">'+sum.totalBerat+' kg</div><div class="lbl">Total Material Terjual</div></div>';
+    }).getWalletSummary();
+    google.script.run.withSuccessHandler(function(list){
+      renderHistoryTable('wallet-history', list);
+    }).getTransactions();
+  }
+
+  // ---------------- DAMPAK ----------------
+  function loadImpact(){
+    google.script.run.withSuccessHandler(function(s){
+      document.getElementById('impact-stats').innerHTML =
+        '<div class="stat"><div class="num">'+s.materialTerkumpulKg+' kg</div><div class="lbl">Material Terkumpul</div></div>'+
+        '<div class="stat"><div class="num">'+formatRp(s.nilaiEkonomi)+'</div><div class="lbl">Nilai Ekonomi Tercatat</div></div>'+
+        '<div class="stat"><div class="num">'+s.jumlahTransaksi+'</div><div class="lbl">Transaksi</div></div>'+
+        '<div class="stat"><div class="num">'+s.mitraAktif+'</div><div class="lbl">Mitra Aktif</div></div>';
+    }).getImpactStats();
+  }
+
+  // ---------------- GREEN JOBS ----------------
+  function loadGreenJobs(){
+    google.script.run.withSuccessHandler(function(list){
+      let html = '';
+      list.forEach(r => {
+        html += '<div class="role-card"><b>'+r.peran+'</b><span>'+r.deskripsi+'</span></div>';
+      });
+      document.getElementById('green-jobs-roles').innerHTML = html;
+    }).getGreenJobsInfo();
+  }
+
+  function showError(elId){
+    return function(err){
+      document.getElementById(elId).innerHTML = '<p class="empty">Terjadi kendala: '+(err.message||err)+'</p>';
+    };
+  }
+
+  // ---------------- init ----------------
+  window.addEventListener('DOMContentLoaded', function(){
+    loadMaterials();
+    loadGreenJobs();
+    loadTransactionHistory();
+    google.script.run.withSuccessHandler(function(list){
+      // preload cari-mitra default view
+      let html = '';
+      list.filter(p=>p.status_aktif).forEach(p => { html += partnerCardHtml(p); });
+      document.getElementById('cm-result').innerHTML = html || '<p class="empty">Tidak ada mitra aktif.</p>';
+    }).getPartners();
+  });
+</script>
+</body>
+</html>
